@@ -79,16 +79,16 @@ const Chat = () => {
             </div>
 
             <div className="chat__input">
-                <AddCircleIcon fontSize='large' />
+                <AddCircleIcon className="chat__Icons" fontSize='large' />
                 <form>
                     <input type="text" disabled={!channelId} value={input} onChange={(e) => setInput(e.target.value)} placeholder={`Message #${channelName}`} />
-                    <button className='chat__inputButton' onClick={sendMessage} disabled={!channelId} type='submit'>Send Message</button>
+                    <button className='chat__inputButton' onClick={sendMessage} disabled={!channelId} type='submit'></button>
                 </form>
 
                 <div className="chat__inputIcon">
-                    <CradGiftcardIcon fontSize='large' />
-                    <GifIcon fontSize='large' />
-                    <EmojiEmoticonsIcon fontSize='large' />
+                    <CradGiftcardIcon className="chat__Icons" fontSize='large' />
+                    <GifIcon className="chat__Icons" fontSize='large' />
+                    <EmojiEmoticonsIcon className="chat__Icons" fontSize='large' />
                 </div>
             </div>
         </div>

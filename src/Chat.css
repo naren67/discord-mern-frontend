@@ -11,7 +11,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 15px;
+    padding: 10px 20px;
     border-radius: 5px;
     margin: 20px;
     border-top: 1px solid gray;
@@ -44,6 +44,12 @@
 
 .chat__inputIcons>.MuiSvgIcon-root {
     padding: 5px;
+}
+
+.chat__Icons{
+    cursor: pointer;
+    font-size: 30px !important;
+    padding: 0px 5px;
 }
 
 .chat__messages{
