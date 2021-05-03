@@ -14,6 +14,16 @@ import { useEffect } from 'react'
 import db from './firebase'
 import firebase from 'firebase'
 
+import axios from './axios'
+
+//pusher
+import Pusher from 'pusher-js'
+
+const pusher = new Pusher('ca601933a3860937099f', {
+    cluster: 'ap2'
+  });
+
+
 const Chat = () => {
     const user = useSelector(selectUser)
     const channelId = useSelector(selectChannelId)
@@ -21,25 +31,34 @@ const Chat = () => {
     const [input, setInput] = useState('')
     const [messages, setMessages] = useState([])
 
-    useEffect(() => {
-        if (channelId) {
-            db.collection('channels').doc(channelId).collection('messages').orderBy('timestamp', 'desc').onSnapshot(snapshot => {
-                setMessages(snapshot.docs.map(doc => doc.data()))
+    const getConversation = (channelId) =>{
+        if(channelId){
+            axios.get(`/get/conversation?id=${channelId}`).then((res)=>{
+                setMessages(res.data[0].conversation)
             })
         }
+    }
 
+    useEffect(() => {
+        getConversation(channelId)
 
+        const channel = pusher.subscribe('my-channel');
+        channel.bind('my-event', function(data) {
+            getConversation(channelId)
+
+    }); 
     }, [channelId])
 
     const sendMessage = (e) => {
         e.preventDefault()
 
-        db.collection('channels').doc(channelId).collection('messages').add({
-            message: input,
-            user: user,
-            timestamp: firebase.firestore.FieldValue.serverTimestamp()
-        })
-
+       axios.post(`/new/message?id=${channelId}`,{
+           message : input,
+           timestamp : Date.now(),
+           user : user,
+       })
+       console.log('message sent')
+        
         setInput('')
     }
 
@@ -52,7 +71,10 @@ const Chat = () => {
                     console.log(message)
                 })}
                 {messages.map(message => (
-                    <Message message={message.message} timestamp={message.timestamp} user={message.user} />
+                    <Message 
+                    message={message.message} 
+                    timestamp={message.timestamp} 
+                    user={message.user} />
                 ))}
             </div>
 

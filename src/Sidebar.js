@@ -16,17 +16,38 @@ import db, { auth } from './firebase'
 import { useState } from 'react'
 import { useEffect } from 'react'
 
+//axios connection
+import axios from './axios'
+
+//pusher
+import Pusher from 'pusher-js'
+
+var pusher = new Pusher('ca601933a3860937099f', {
+    cluster: 'ap2'
+  });
+
+
 const Sidebar = () => {
     const user = useSelector(selectUser)
     const [channels, setChannels] = useState([])
 
-    useEffect(() => {
-        db.collection('channels').onSnapshot(snapshot => {
-            setChannels(snapshot.docs.map(doc => ({
-                id: doc.id,
-                channel: doc.data()
-            })))
+    //getting data from api using instance - axios from './axios
+    const getChannels =()=>{
+        axios.get('/get/channelList')
+        .then(res=>{
+            console.log(res.data)
+            setChannels(res.data)
         })
+    }
+
+    useEffect(() => {
+       getChannels()
+
+       const channel = pusher.subscribe('channels');
+       channel.bind('newChannel', function(data) {
+        //  alert(JSON.stringify(data));
+        getChannels()
+       });
     }, [])
 
     const handleAddChannel = (e) => {
@@ -35,10 +56,9 @@ const Sidebar = () => {
         const channelName = prompt('Enter a new channel name')
 
         if (channelName) {
-            db.collection('channels').add({
-                channelName: channelName
-            })
-
+          axios.post('/new/channel', {
+            channelName: channelName
+          })
         }
     }
 
@@ -60,8 +80,8 @@ const Sidebar = () => {
                 </div>
                 <div className="sidebar__channelsList">
                     {
-                        channels.map(({ id, channel }) => (
-                            <SidebarChannel key={id} id={id} channelName={channel.channelName} />
+                        channels.map((channel) => (
+                            <SidebarChannel key={channel.id} id={channel.id} channelName={channel.channelName} />
                         ))
                     }
                 </div>

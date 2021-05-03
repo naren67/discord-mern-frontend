@@ -48,8 +48,9 @@
     align-items: center;
     color: gray;
     background-color: #2f3135;
-    padding: 10px;
+    padding: 0px;
     border-top: 1px solid gray;
+    font-size: 15px;
 
 }
 

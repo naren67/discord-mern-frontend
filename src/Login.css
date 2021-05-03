@@ -16,3 +16,12 @@
     background-color: black;
     color: #738adb;
 }
+
+.login__logo{
+    width: 200px;
+    height: 200px;
+}
+
+.login__logo img{
+    width: 100%;
+}
